@@ -3,6 +3,7 @@
 import typer
 from rich.console import Console
 
+from smart_nippo.cli.commands.clipboard import clipboard, paste
 from smart_nippo.cli.commands.hello import hello
 
 app = typer.Typer(
@@ -14,6 +15,8 @@ console = Console()
 
 # Add subcommands
 app.command("hello")(hello)
+app.command("copy")(clipboard)
+app.command("paste")(paste)
 
 
 @app.callback(invoke_without_command=True)
@@ -33,6 +36,8 @@ def callback(
         )
         console.print("\n[bold]Available commands:[/bold]")
         console.print("  hello    Hello World コマンド")
+        console.print("  copy     テキストをクリップボードにコピー")
+        console.print("  paste    クリップボードの内容を表示")
 
 
 def main() -> None:
