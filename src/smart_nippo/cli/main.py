@@ -6,6 +6,7 @@ from rich.console import Console
 from smart_nippo.cli.commands.clipboard import clipboard, paste
 from smart_nippo.cli.commands.editor import edit
 from smart_nippo.cli.commands.hello import hello
+from smart_nippo.cli.commands.template import app as template_app
 
 app = typer.Typer(
     name="smart-nippo",
@@ -19,6 +20,7 @@ app.command("hello")(hello)
 app.command("copy")(clipboard)
 app.command("paste")(paste)
 app.command("edit")(edit)
+app.add_typer(template_app, name="template", help="テンプレート管理")
 
 
 @app.callback(invoke_without_command=True)
@@ -41,7 +43,7 @@ def callback(
         console.print("  copy       テキストをクリップボードにコピー")
         console.print("  paste      クリップボードの内容を表示")
         console.print("  edit       外部エディタを起動して内容を編集")
-        console.print("  edit-file  既存ファイルをエディタで編集")
+        console.print("  template   テンプレート管理")
 
 
 def main() -> None:

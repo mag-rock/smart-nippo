@@ -1,15 +1,14 @@
 """Tests for core models."""
 
+from datetime import date, timedelta
+
 import pytest
-from datetime import date, datetime, timedelta
 
 from smart_nippo.core.models import (
-    FieldType,
     DateDefault,
-    TemplateField,
+    FieldType,
     Template,
-    Report,
-    Project,
+    TemplateField,
 )
 from smart_nippo.core.models.template import create_default_template
 from smart_nippo.core.validators import FieldValidator, validate_report_data
@@ -178,16 +177,16 @@ class TestFieldValidator:
             label="開始時刻",
             field_type=FieldType.TIME,
         )
-        
+
         # 正しい形式
         assert FieldValidator.validate_time("09:00", field) == "09:00"
         assert FieldValidator.validate_time("23:45", field) == "23:45"
-        
+
         # 15分刻みでない場合の丸め
         assert FieldValidator.validate_time("09:07", field) == "09:00"
         assert FieldValidator.validate_time("09:08", field) == "09:15"
         assert FieldValidator.validate_time("09:23", field) == "09:30"
-        
+
         # 不正な形式
         with pytest.raises(ValueError, match="HH:MM 形式"):
             FieldValidator.validate_time("9時30分", field)
@@ -200,14 +199,14 @@ class TestFieldValidator:
             field_type=FieldType.TEXT,
             max_length=10,
         )
-        
+
         # 正常な値
         assert FieldValidator.validate_text("プロジェクトA", field) == "プロジェクトA"
-        
+
         # 改行を含む場合
         with pytest.raises(ValueError, match="改行を含めることはできません"):
             FieldValidator.validate_text("プロジェクト\nA", field)
-        
+
         # 文字数超過
         with pytest.raises(ValueError, match="10文字以内"):
             FieldValidator.validate_text("あ" * 11, field)
@@ -220,10 +219,10 @@ class TestFieldValidator:
             field_type=FieldType.SELECTION,
             options=["完了", "進行中", "未着手"],
         )
-        
+
         # 正しい選択肢
         assert FieldValidator.validate_selection("完了", field) == "完了"
-        
+
         # 無効な選択肢
         with pytest.raises(ValueError, match="有効な選択肢ではありません"):
             FieldValidator.validate_selection("中断", field)
@@ -236,7 +235,7 @@ class TestFieldValidator:
             field_type=FieldType.TEXT,
             required=True,
         )
-        
+
         # 値がない場合
         with pytest.raises(ValueError, match="必須項目"):
             FieldValidator.validate(None, field)
@@ -263,12 +262,12 @@ class TestValidateReportData:
                 required=True,
             ),
         ]
-        
+
         data = {
             "date": "2024-01-15",
             "content": "今日の作業内容",
         }
-        
+
         result = validate_report_data(data, fields)
         assert result["date"] == "2024-01-15"
         assert result["content"] == "今日の作業内容"
@@ -289,11 +288,11 @@ class TestValidateReportData:
                 required=True,
             ),
         ]
-        
+
         data = {
             "date": "2024-01-15",
             # contentが不足
         }
-        
+
         with pytest.raises(ValueError, match="内容: .* は必須項目"):
             validate_report_data(data, fields)

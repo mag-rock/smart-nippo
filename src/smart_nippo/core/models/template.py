@@ -67,6 +67,9 @@ def create_default_template() -> Template:
             field_type=FieldType.DATE,
             required=True,
             default_value=DateDefault.TODAY.value,
+            options=None,
+            placeholder=None,
+            max_length=None,
             order=1,
         ),
         TemplateField(
@@ -74,8 +77,10 @@ def create_default_template() -> Template:
             label="プロジェクト名",
             field_type=FieldType.TEXT,
             required=True,
-            max_length=100,
+            default_value=None,
+            options=None,
             placeholder="例: プロジェクトA",
+            max_length=100,
             order=2,
         ),
         TemplateField(
@@ -84,6 +89,9 @@ def create_default_template() -> Template:
             field_type=FieldType.TIME,
             required=False,
             default_value="09:00",
+            options=None,
+            placeholder=None,
+            max_length=None,
             order=3,
         ),
         TemplateField(
@@ -92,6 +100,9 @@ def create_default_template() -> Template:
             field_type=FieldType.TIME,
             required=False,
             default_value="18:00",
+            options=None,
+            placeholder=None,
+            max_length=None,
             order=4,
         ),
         TemplateField(
@@ -99,7 +110,10 @@ def create_default_template() -> Template:
             label="作業内容",
             field_type=FieldType.MEMO,
             required=True,
+            default_value=None,
+            options=None,
             placeholder="今日の作業内容を記入してください",
+            max_length=None,
             order=5,
         ),
         TemplateField(
@@ -107,8 +121,10 @@ def create_default_template() -> Template:
             label="進捗状況",
             field_type=FieldType.SELECTION,
             required=True,
-            options=["完了", "進行中", "未着手"],
             default_value="進行中",
+            options=["完了", "進行中", "未着手"],
+            placeholder=None,
+            max_length=None,
             order=6,
         ),
         TemplateField(
@@ -116,7 +132,10 @@ def create_default_template() -> Template:
             label="課題・問題点",
             field_type=FieldType.MEMO,
             required=False,
+            default_value=None,
+            options=None,
             placeholder="課題や問題点があれば記入してください",
+            max_length=None,
             order=7,
         ),
         TemplateField(
@@ -124,7 +143,10 @@ def create_default_template() -> Template:
             label="明日の予定",
             field_type=FieldType.MEMO,
             required=False,
+            default_value=None,
+            options=None,
             placeholder="明日の作業予定を記入してください",
+            max_length=None,
             order=8,
         ),
         TemplateField(
@@ -132,14 +154,20 @@ def create_default_template() -> Template:
             label="備考・メモ",
             field_type=FieldType.MEMO,
             required=False,
+            default_value=None,
+            options=None,
             placeholder="その他のメモや備考",
+            max_length=None,
             order=9,
         ),
     ]
 
     return Template(
+        id=None,
         name="標準テンプレート",
         description="日報作成用の標準テンプレート",
         fields=fields,
         is_default=True,
+        created_at=None,
+        updated_at=None,
     )

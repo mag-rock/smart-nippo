@@ -73,14 +73,14 @@ class TestConfigManager:
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "config.yaml"
             manager = ConfigManager(config_path)
-            
+
             config = manager.load()
-            
+
             # デフォルト設定が読み込まれることを確認
             assert isinstance(config, Config)
             assert config.database.path == "~/.smart-nippo/data.db"
             assert config.editor.command == "vim"
-            
+
             # ファイルが作成されることを確認
             assert config_path.exists()
 
@@ -89,21 +89,21 @@ class TestConfigManager:
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "config.yaml"
             manager = ConfigManager(config_path)
-            
+
             # カスタム設定を作成
             config = Config()
             config.database.path = "/custom/path/data.db"
             config.editor.command = "nano"
             config.defaults.project = "デフォルトプロジェクト"
-            
+
             # 保存
             manager.save(config)
             assert config_path.exists()
-            
+
             # 新しいマネージャーで読み込み
             manager2 = ConfigManager(config_path)
             loaded_config = manager2.load()
-            
+
             # 値が正しく保存・読み込みされることを確認
             assert loaded_config.database.path == "/custom/path/data.db"
             assert loaded_config.editor.command == "nano"
@@ -114,12 +114,12 @@ class TestConfigManager:
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "config.yaml"
             manager = ConfigManager(config_path)
-            
+
             # 値を取得
             assert manager.get("database.path") == "~/.smart-nippo/data.db"
             assert manager.get("editor.command") == "vim"
             assert manager.get("display.language") == "ja"
-            
+
             # 存在しないキーのデフォルト値
             assert manager.get("nonexistent.key", "default") == "default"
 
@@ -128,15 +128,15 @@ class TestConfigManager:
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "config.yaml"
             manager = ConfigManager(config_path)
-            
+
             # 値を設定
             manager.set("database.path", "/new/path/data.db")
             manager.set("editor.command", "code")
-            
+
             # 値が正しく設定されることを確認
             assert manager.get("database.path") == "/new/path/data.db"
             assert manager.get("editor.command") == "code"
-            
+
             # ファイルに保存されることを確認
             manager2 = ConfigManager(config_path)
             assert manager2.get("database.path") == "/new/path/data.db"
@@ -147,7 +147,7 @@ class TestConfigManager:
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "config.yaml"
             manager = ConfigManager(config_path)
-            
+
             with pytest.raises(ValueError, match="設定キー.*が見つかりません"):
                 manager.set("invalid.key", "value")
 
@@ -156,11 +156,11 @@ class TestConfigManager:
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "config.yaml"
             manager = ConfigManager(config_path)
-            
+
             # 初回読み込み
             config1 = manager.load()
             original_path = config1.database.path
-            
+
             # 外部でファイルを変更（実際の使用ケースをシミュレート）
             import yaml
             with open(config_path, "w", encoding="utf-8") as f:
@@ -180,7 +180,7 @@ class TestConfigManager:
                     }
                 }
                 yaml.safe_dump(data, f)
-            
+
             # リロードして変更が反映されることを確認
             config2 = manager.reload()
             assert config2.database.path == "/external/change/data.db"
@@ -191,25 +191,25 @@ class TestConfigManager:
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "config.yaml"
             manager = ConfigManager(config_path)
-            
+
             # ホームディレクトリ展開をテスト
             manager.set("database.path", "~/.smart-nippo/test.db")
             expanded_path = manager.get_database_path()
-            
+
             assert "~" not in str(expanded_path)
             assert ".smart-nippo/test.db" in str(expanded_path)
 
     def test_get_editor_command_env_override(self):
         """環境変数でのエディタコマンド上書きをテスト."""
         import os
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "config.yaml"
             manager = ConfigManager(config_path)
-            
+
             # 環境変数がない場合は設定ファイルの値
             assert manager.get_editor_command() == "vim"
-            
+
             # 環境変数を設定
             old_editor = os.environ.get("EDITOR")
             try:
