@@ -29,6 +29,9 @@ coverage.xml
 .DS_Store
 Thumbs.db
 
+# Serena MCP configuration
+.serena/
+
 # Build artifacts
 build/
 dist/
