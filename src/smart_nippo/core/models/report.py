@@ -1,8 +1,12 @@
 """Report model for storing daily reports."""
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
+
+if TYPE_CHECKING:
+    from .template import Template
 
 
 class Report(BaseModel):
@@ -10,6 +14,7 @@ class Report(BaseModel):
 
     id: int | None = Field(None, description="日報ID")
     template_id: int = Field(..., description="使用したテンプレートのID")
+    template: "Template | None" = Field(None, description="使用したテンプレート")
     data: dict[str, str | None] = Field(..., description="フィールド名と値のマッピング")
     created_at: datetime | None = Field(None, description="作成日時")
     updated_at: datetime | None = Field(None, description="更新日時")
@@ -26,6 +31,11 @@ class Report(BaseModel):
         """日付フィールドの値を取得."""
         return self.get_field_value("date")
 
-    def get_project(self) -> str | None:
+    def get_project_name(self) -> str | None:
         """プロジェクト名フィールドの値を取得."""
         return self.get_field_value("project")
+
+    model_config = {"arbitrary_types_allowed": True}
+
+
+
